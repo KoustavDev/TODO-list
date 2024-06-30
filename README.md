@@ -21,7 +21,7 @@ This is a modern and user-friendly To-Do app built using the following technolog
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/<your-username>/<your-repo-name>.git
+   git clone https://github.com/KoustavDev/TODO-list
    ```
 
 2. Install dependencies:
