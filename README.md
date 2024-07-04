@@ -59,9 +59,6 @@ This is a modern and user-friendly To-Do app built using the following technolog
 
 Feel free to fork this repository and submit pull requests with your enhancements!
 
-**License:**
-
-This project is licensed under the (specify your preferred open-source license, e.g., MIT License).
 
 **Additional Notes:**
 
