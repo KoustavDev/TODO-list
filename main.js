@@ -12,6 +12,9 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
+// Load data from localStorage on page load
+document.addEventListener("DOMContentLoaded", loadData);
+
 function AddData() {
     let txt = input.value.trim();
     if (txt === ''){
@@ -19,12 +22,20 @@ function AddData() {
         return;
     }
 
+    let data = createDataElement(txt);
+    section.prepend(data);
+    input.value = '';
+
+    saveData();
+}
+
+function createDataElement(txt) {
     let data = document.createElement('div');
     data.innerHTML = `
         <div class="list flex justify-between text-[25px] rounded-2xl px-1 max-h-[70px]">
             <div class="form-control">
                 <label class="cursor-pointer label flex gap-6">
-                    <input type="checkbox" id="check" class="checkbox checkbox-success self-center" />
+                    <input type="checkbox" class="checkbox checkbox-success self-center" />
                     <span class="data text-lg">${txt}</span>
                 </label>
             </div>
@@ -34,11 +45,9 @@ function AddData() {
             </div>
         </div>`;
     
-    section.prepend(data);
-    input.value = '';
-
     data.querySelector(".delete").addEventListener("click", () => {
         data.remove();
+        saveData();
     });
 
     let isEditing = false;
@@ -51,11 +60,41 @@ function AddData() {
         } else {
             textSpan.contentEditable = "true";
             textSpan.focus();
-            // Select all text inside the span
             document.execCommand('selectAll', false, null);
             data.querySelector(".edit").setAttribute("class","edit btn btn-sm btn-outline btn-success");
             data.querySelector(".edit").textContent = "Save";
         }
         isEditing = !isEditing;
+        saveData();
     });
+
+    data.querySelector(".checkbox").addEventListener("change", () => {
+        saveData();
+    });
+
+    return data;
+}
+
+function saveData() {
+    const dataElements = section.querySelectorAll(".list");
+    const dataArray = [];
+    dataElements.forEach(dataElement => {
+        const text = dataElement.querySelector(".data").textContent;
+        const isChecked = dataElement.querySelector(".checkbox").checked;
+        dataArray.push({ text, isChecked });
+    });
+    localStorage.setItem("todoData", JSON.stringify(dataArray));
+}
+
+function loadData() {
+    const savedData = JSON.parse(localStorage.getItem("todoData"));
+    if (savedData) {
+        savedData.forEach(item => {
+            const data = createDataElement(item.text);
+            section.append(data);
+            if (item.isChecked) {
+                data.querySelector(".checkbox").checked = true;
+            }
+        });
+    }
 }
